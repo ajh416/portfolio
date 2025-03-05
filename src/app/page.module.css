@@ -1,0 +1,145 @@
+.body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.container {
+	min-height: 100vh;
+	padding: 0rem;
+	background-color: #1a1a1a;
+	color: #e0e0e0;
+}
+
+.title {
+	font-size: 2.5rem;
+	text-align: center;
+	margin-bottom: 2rem;
+	color: #ffffff;
+}
+
+.intro {
+	text-align: center;
+	max-width: 600px;
+	margin: 0 auto 2rem;
+	font-size: 1.1rem;
+	color: #b0b0b0;
+}
+
+.cardGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 2rem;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.card {
+	background-color: #2a2a2a;
+	border-radius: 8px;
+	padding: 1.5rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	transition: transform 0.2s ease;
+}
+
+.card:hover {
+	transform: translateY(-5px);
+}
+
+.cardImage {
+	width: 100%;
+	height: 200px;
+	object-fit: cover;
+	border-radius: 4px;
+	margin-bottom: 1rem;
+}
+
+.cardHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.card h3 {
+	margin: 0;
+	color: #ffffff;
+}
+
+.card p {
+	margin: 0;
+	color: #b0b0b0;
+}
+
+.button {
+	background-color: #4a4a4a;
+	color: #ffffff;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+	text-decoration: none;
+	font-size: 0.9rem;
+	transition: background-color 0.2s ease;
+}
+
+.button:hover {
+	background-color: #6a6a6a;
+}
+
+.resumeSection {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+}
+
+.resumeTitle {
+  font-size: 2rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.resumeContent {
+  background-color: #2a2a2a;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.resumeContent h3 {
+  color: #ffffff;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.resumeContent p {
+  color: #b0b0b0;
+  margin: 0 0 1rem;
+}
+
+.skillsList {
+  list-style: none;
+  padding: 0;
+  color: #b0b0b0;
+}
+
+.skillsList li {
+  margin-bottom: 0.5rem;
+}
+
+.resumePlug {
+	text-align: center;
+	margin-top: 2rem;
+}
+
+.resumebutton {
+	background-color: #4a4a4a;
+	color: #ffffff;
+	padding: 0.25rem 0.5rem;
+	border-radius: 4px;
+	text-decoration: none;
+	font-size: 0.9rem;
+	transition: background-color 0.2s ease;
+}
+
+.resumeButton:hover {
+	background-color: #6a6a6a;
+}
