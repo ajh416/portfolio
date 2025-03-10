@@ -1,29 +1,54 @@
-.body {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
+.container {
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
 }
 
-.container {
-	min-height: 100vh;
-	padding: 0rem;
-	background-color: #1a1a1a;
-	color: #e0e0e0;
+.introSection {
+  min-height: 100vh;
+  background-image: url('https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg'); /* Replace with your image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  /* background: rgba(0, 0, 0, 0.5); /* Optional overlay */
 }
 
 .title {
-	font-size: 2.5rem;
-	text-align: center;
-	margin-bottom: 2rem;
-	color: #ffffff;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .intro {
-	text-align: center;
-	max-width: 600px;
-	margin: 0 auto 2rem;
-	font-size: 1.1rem;
-	color: #b0b0b0;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  max-width: 600px;
+  position: relative;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.intro::after {
+  content: '|';
+  position: absolute;
+  right: -0.2rem;
+  color: #ffffff;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 .cardGrid {
