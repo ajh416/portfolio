@@ -45,6 +45,7 @@ export default function Home() {
 					<h1 className={styles.title}>Hey, I'm Adam Henry</h1>
 					<p className={styles.intro}></p>
 				</div>
+
 				<h1 className={styles.title}>Stuff I've Made</h1>
 				<div className={styles.cardGrid}>
 					<div className={styles.card}>
@@ -74,13 +75,14 @@ export default function Home() {
 						<h3>Skills</h3>
 						<ul className={styles.skillsList}>
 							<li>C/C++ and OpenGL</li>
+							<li>Git and GitHub</li>
 							<li>JavaScript, HTML, CSS</li>
 							<li>Python and data analysis</li>
 						</ul>
 						<h3>Hobbies</h3>
 						<p>Programming, gaming, hiking, and I've been learning about radio/rf stuff.</p>
 					</div>
-					<p className={styles.resumePlug}>Check out my <Link href="/resume.pdf" target="_blank" className={styles.resumebutton}>resume (.pdf)</Link> for all of my information.</p>
+					<p className={styles.resumePlug}>Check out my <Link href="/AdamHenryResume.pdf" target="_blank" className={styles.resumebutton}>resume (.pdf)</Link> for all of my information.</p>
 				</div>
 			</div>
 		</div>
