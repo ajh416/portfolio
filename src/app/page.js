@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 export default function Home() {
 	useEffect(() => {
 		const phrases = [
-			"I’m a CS student passionate about graphics.",
+			"I'm a CS student passionate about graphics.",
 			"I enjoy playing with shaders and ray tracing.",
 			"I'm a student at Oregon State University.",
 		];
@@ -80,7 +80,7 @@ export default function Home() {
 							<li>Python and data analysis</li>
 						</ul>
 						<h3>Hobbies</h3>
-						<p>Programming, gaming, hiking, and I've been learning about radio/rf stuff.</p>
+						<p>Programming, gaming, hiking, photography, and I've been learning about radio/rf stuff.</p>
 					</div>
 					<p className={styles.resumePlug}>Check out my <Link href="/AdamHenryResume.pdf" target="_blank" className={styles.resumebutton}>resume (.pdf)</Link> for all of my information.</p>
 				</div>
