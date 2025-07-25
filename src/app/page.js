@@ -8,9 +8,9 @@ import { useEffect } from 'react';
 export default function Home() {
 	useEffect(() => {
 		const phrases = [
-			"I'm a CS student passionate about graphics.",
+			"I'm a CS graduate passionate about graphics and imaging.",
 			"I enjoy playing with shaders and ray tracing.",
-			"I'm a student at Oregon State University.",
+			"I am actively seeking a job in the graphics or imaging field.",
 		];
 		const intro = document.querySelector(`.${styles.intro}`);
 		let index = 0;
@@ -48,6 +48,14 @@ export default function Home() {
 
 				<h1 className={styles.title}>Stuff I've Made</h1>
 				<div className={styles.cardGrid}>
+				<div className={styles.card}>
+						<img src="images/EDA_UI.png" alt="A high-performance graphical interface to assist OSU researchers with image/material analysis." className={styles.cardImage} />
+						<div className={styles.cardHeader}>
+							<h3>Enhancing Deformation Analysis UI</h3>
+							<Link href="https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI" target="_blank" className={styles.button}>View</Link>
+						</div>
+						<p>A high-performance desktop graphical interface to assist OSU researchers with image/material analysis.</p>
+					</div>
 					<div className={styles.card}>
 						<img src="images/wildfire-map.png" alt="Image of wildfire-map.com, displaying a map of current wildfires" className={styles.cardImage} />
 						<div className={styles.cardHeader}>
@@ -70,11 +78,11 @@ export default function Home() {
 					<h2 className={styles.resumeTitle}>About Me</h2>
 					<div className={styles.resumeContent}>
 						<h3>Education</h3>
-						<p>Oregon State University - Computer Science, Expected June 2025</p>
-						<p>Relevant Courses: Data Structures (CS261), Computer Graphics (CS450), Computer Graphics Shaders (CS457), Web Development (CS290)</p>
+						<p>Oregon State University - B.S. Computer Science, Graduated June 2025</p>
+						<p>Relevant Courses: Computer Graphics (CS450), Computer Graphics Shaders (CS457), Web Development (CS290)</p>
 						<h3>Skills</h3>
 						<ul className={styles.skillsList}>
-							<li>C/C++ and OpenGL</li>
+							<li>C/C++, OpenGL, and Image Analysis</li>
 							<li>Git and GitHub</li>
 							<li>JavaScript, HTML, CSS</li>
 							<li>Python and data analysis</li>
