@@ -63,7 +63,7 @@ jobs:
           PORT: ${{ secrets.SSH_PORT }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/portfolio' }}
           REL: ${{ github.run_number }}-${{ github.sha }}
-          POST_DEPLOY: ${{ secrets.POST_DEPLOY || 'sudo systemctl reload nginx' }}
+          POST_DEPLOY: ${{ secrets.POST_DEPLOY || 'true' }}
         run: |
           rsync -az --delete -e "ssh -p $PORT" site/ "$USER@$HOST:$DEPLOY_PATH/releases/$REL/"
           ssh -p "$PORT" "$USER@$HOST" \
