@@ -73,4 +73,6 @@ jobs:
         if: ${{ vars.HEALTHCHECK_URL != '' }}
         run: |
           set -e
-          curl -fsSL "${{ vars.HEALTHCHECK_URL }}/version.txt" | grep -q "${{ github.sha }}"
+          DEPLOYED=$(curl -fsSL "${{ vars.HEALTHCHECK_URL }}")
+          echo "Healthcheck response: $DEPLOYED"
+          test "$DEPLOYED" = "${{ github.sha}}"
