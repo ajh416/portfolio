@@ -1,23 +1,35 @@
-name: build-and-deploy
+name: build (docker) & deploy (rsync)
+
 on:
+  release:
+    types: [published]
   push:
     branches: [ main, cicd ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      # build in a clean linux box so lockfile/deps match prod
+      - name: docker build site
+        run: docker build -t site-builder .
 
-      - run: npm ci
-      - run: npm run build   # next export → ./out
+      - name: extract static export
+        run: |
+          rm -rf out && mkdir -p out
+          docker run --rm -v "$PWD/out:/mnt/out" site-builder \
+            bash -lc 'cp -r /app/out/* /mnt/out/'
 
-      - uses: actions/upload-artifact@v4
+      - name: stamp version
+        run: |
+          echo "${{ github.sha }}" > out/version.txt
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: out
@@ -26,6 +38,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: read
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -35,22 +49,28 @@ jobs:
       - name: install rsync + ssh
         run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
 
-      - name: write ssh key
+      - name: write ssh key & known_hosts
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: upload release (atomic directory)
+      - name: upload release (atomic)
         env:
           HOST: ${{ secrets.SSH_HOST }}
           USER: ${{ secrets.SSH_USER }}
           PORT: ${{ secrets.SSH_PORT }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/portfolio' }}
           REL: ${{ github.run_number }}-${{ github.sha }}
+          POST_DEPLOY: ${{ secrets.POST_DEPLOY || 'sudo systemctl reload nginx' }}
         run: |
           rsync -az --delete -e "ssh -p $PORT" site/ "$USER@$HOST:$DEPLOY_PATH/releases/$REL/"
           ssh -p "$PORT" "$USER@$HOST" \
-            "ln -sfn $DEPLOY_PATH/releases/$REL $DEPLOY_PATH/current && \
-             test -x /usr/sbin/nginx && sudo systemctl reload nginx || true"
+            "ln -sfn $DEPLOY_PATH/releases/$REL $DEPLOY_PATH/current && $POST_DEPLOY"
+
+      - name: healthcheck
+        if: ${{ vars.HEALTHCHECK_URL != '' }}
+        run: |
+          set -e
+          curl -fsSL "${{ vars.HEALTHCHECK_URL }}/version.txt" | grep -q "${{ github.sha }}"
