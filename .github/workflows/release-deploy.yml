@@ -1,4 +1,4 @@
-name: build (docker) & deploy (rsync)
+name: build & deploy
 
 on:
   release:
