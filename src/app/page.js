@@ -94,7 +94,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-
 				<div className={styles.resumeSection}>
 					<h2 className={styles.resumeTitle}>About Me</h2>
 					<div className={styles.resumeContent}>
