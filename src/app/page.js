@@ -13,11 +13,11 @@ export default function Home() {
     };
 	const projects = [
     {
-      title: 'Enhancing Deformation Analysis UI',
+      title: 'Enhancing Deformation Analysis Capstone Project',
       image: 'images/EDA_UI.png',
       link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
       summary: 'A high-performance desktop graphical interface to assist OSU researchers with image/material analysis.',
-      details: 'Tech stack: C++ with ImGui for UI, integrates OpenCV for image processing. I implemented key features including image loading, filtering, and analysis tools, as well as performance optimizations for handling large datasets.',
+      details: 'Tech stack: C++ with ImGui for UI, integrates OpenCV for image processing. I implemented key features including image loading, filtering, and analysis tools, as well as performance optimizations for handling large datasets. We integrated multiple AI models for image cleanup and analysis, improving accuracy and efficiency.',
     },
     {
       title: 'Wildfire Map',
@@ -33,6 +33,13 @@ export default function Home() {
       summary: 'A ray/path tracer created from scratch using well-known ray-object intersection techniques.',
       details: 'Written in C++ with multithreading and support for reflection, refraction, and global illumination. I implemented BVH acceleration structures to improve performance.',
     },
+	{
+		title: 'This Website',
+		image: 'images/portfolio.png',
+		link: 'https://github.com/ajh416/portfolio',
+		summary: 'My personal portfolio website built with Next.js and hosted on a DigitalOcean droplet.',
+		details: 'Features a responsive design, project showcase, and dynamic typing effect. I designed and developed the entire site, and implemented CI/CD pipelines for seamless updates using GitHub Actions.',
+	},
     ];
 	useEffect(() => {
 		const phrases = [
