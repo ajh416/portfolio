@@ -1,0 +1,78 @@
+name: build & deploy
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [ main, cicd ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # build in a clean linux box so lockfile/deps match prod
+      - name: docker build site
+        run: docker build -t site-builder .
+
+      - name: extract static export
+        run: |
+          rm -rf out && mkdir -p out
+          docker run --rm -v "$PWD/out:/mnt/out" site-builder \
+            bash -lc 'cp -r /app/out/* /mnt/out/'
+
+      - name: stamp version
+        run: |
+          echo "${{ github.sha }}" > out/version.txt
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: site
+
+      - name: install rsync + ssh
+        run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
+
+      - name: write ssh key & known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: upload release (atomic)
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USER: ${{ secrets.SSH_USER }}
+          PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/portfolio' }}
+          REL: ${{ github.run_number }}-${{ github.sha }}
+          POST_DEPLOY: ${{ secrets.POST_DEPLOY || 'true' }}
+        run: |
+          rsync -az --delete -e "ssh -p $PORT" site/ "$USER@$HOST:$DEPLOY_PATH/releases/$REL/"
+          ssh -p "$PORT" "$USER@$HOST" \
+            "ln -sfn $DEPLOY_PATH/releases/$REL $DEPLOY_PATH/current && $POST_DEPLOY"
+
+      - name: healthcheck
+        if: ${{ vars.HEALTHCHECK_URL != '' }}
+        run: |
+          set -e
+          DEPLOYED=$(curl -fsSL "${{ vars.HEALTHCHECK_URL }}")
+          echo "Healthcheck response: $DEPLOYED"
+          test "$DEPLOYED" = "${{ github.sha}}"

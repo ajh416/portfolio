@@ -9,8 +9,7 @@ export default function Home() {
 	useEffect(() => {
 		const phrases = [
 			"I'm a CS graduate passionate about graphics and imaging.",
-			"I enjoy playing with shaders and ray tracing.",
-			"I am actively seeking a job in the graphics or imaging field.",
+			"I am actively seeking a job in software development.",
 		];
 		const intro = document.querySelector(`.${styles.intro}`);
 		let index = 0;
@@ -22,10 +21,10 @@ export default function Home() {
 			intro.textContent = currentPhrase.substring(0, charIndex);
 			if (!isDeleting && charIndex < currentPhrase.length) {
 				charIndex++;
-				setTimeout(type, 100);
+				setTimeout(type, 75);
 			} else if (isDeleting && charIndex > 1) {
 				charIndex--;
-				setTimeout(type, 50);
+				setTimeout(type, 40);
 			} else {
 				isDeleting = !isDeleting;
 				if (!isDeleting) index = (index + 1) % phrases.length;
@@ -49,7 +48,7 @@ export default function Home() {
 				<h1 className={styles.title}>Stuff I've Made</h1>
 				<div className={styles.cardGrid}>
 				<div className={styles.card}>
-						<img src="images/EDA_UI.png" alt="A high-performance graphical interface to assist OSU researchers with image/material analysis." className={styles.cardImage} />
+						<img src="images/EDA_UI.png" alt="A screenshot of the Enhancing Deformation Analysis UI" className={styles.cardImage} />
 						<div className={styles.cardHeader}>
 							<h3>Enhancing Deformation Analysis UI</h3>
 							<Link href="https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI" target="_blank" className={styles.button}>View</Link>
