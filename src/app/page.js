@@ -17,14 +17,14 @@ export default function Home() {
       image: 'images/EDA_UI.png',
       link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
       summary: 'A high-performance desktop graphical interface to assist OSU researchers with image/material analysis.',
-      details: 'Tech stack: C++ with QT for UI, integrates OpenCV for image processing. My role: implemented the rendering pipeline and refactored the state management layer.',
+      details: 'Tech stack: C++ with ImGui for UI, integrates OpenCV for image processing. I implemented key features including image loading, filtering, and analysis tools, as well as performance optimizations for handling large datasets.',
     },
     {
       title: 'Wildfire Map',
       image: 'images/wildfire-map.png',
       link: 'https://wildfire-map.com',
       summary: 'Displaying wildfire locations and information on an interactive map.',
-      details: 'Built with React, Leaflet, and a Node.js backend. Scrapes real-time data from government APIs and renders heatmaps. I handled the API integration and caching layer.',
+      details: 'Built with React, Leaflet, and a Node.js backend. Scrapes real-time data from government APIs and renders heatmaps. I handled the full stack, including data fetching, map rendering, and UI design.',
     },
     {
       title: 'Ray/Path Tracer',
