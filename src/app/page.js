@@ -3,6 +3,7 @@
 import styles from './page.module.css';
 import Link from 'next/link';
 import Head from 'next/head'
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -88,7 +89,7 @@ export default function Home() {
               className={styles.card}
               onClick={() => toggleCard(idx)}
             >
-              <img src={proj.image} alt={`screenshot of ${proj.title}`} className={styles.cardImage} />
+              <Image src={proj.image} alt={`screenshot of ${proj.title}`} className={styles.cardImage} width={100} height={100} />
               <div className={styles.cardHeader}>
                 <h3>{proj.title}</h3>
                 <Link href={proj.link} target="_blank" className={styles.button}>view</Link>
