@@ -1,130 +1,229 @@
+// app/page.jsx
 'use client';
 
-import styles from './page.module.css';
+import Image from 'next/image';
 import Link from 'next/link';
-import Head from 'next/head'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import styles from './page.module.css';
 
 export default function Home() {
-	const [openCard, setOpenCard] = useState(null);
-	const toggleCard = (index) => {
-		// if clicking the already‑open card, close it; otherwise open new
-		setOpenCard(openCard === index ? null : index);
-	};
-	const projects = [
-		{
-			title: 'Enhancing Deformation Analysis Capstone Project',
-			image: 'images/EDA_UI.png',
-			link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
-			summary: 'A high-performance desktop graphical interface to assist OSU researchers with image/material analysis.',
-			details: 'Tech stack: C++ with ImGui for UI, integrates OpenCV for image processing. I implemented key features including image loading, filtering, and analysis tools, as well as performance optimizations for handling large datasets. We integrated multiple AI models for image cleanup and analysis, improving accuracy and efficiency.',
-		},
-		{
-			title: 'Wildfire Map',
-			image: 'images/wildfire-map.png',
-			link: 'https://wildfire-map.com',
-			summary: 'Displaying wildfire locations and information on an interactive map.',
-			details: 'Built with React, Leaflet, and a Node.js backend. Scrapes real-time data from government APIs and renders heatmaps. I handled the full stack, including data fetching, map rendering, and UI design.',
-		},
-		{
-			title: 'Ray/Path Tracer',
-			image: 'images/raytracer.png',
-			link: 'https://github.com/ajh416/RayTracer',
-			summary: 'A ray/path tracer created from scratch using well-known ray-object intersection techniques.',
-			details: 'Written in C++ with multithreading and support for reflection, refraction, and global illumination. I implemented BVH acceleration structures to improve performance.',
-		},
-		{
-			title: 'This Website',
-			image: 'images/portfolio.png',
-			link: 'https://github.com/ajh416/portfolio',
-			summary: 'My personal portfolio website built with Next.js and hosted on a DigitalOcean droplet.',
-			details: 'Features a responsive design, project showcase, and dynamic typing effect. I designed and developed the entire site, and implemented CI/CD pipelines for seamless updates using GitHub Actions.',
-		},
-	];
-	useEffect(() => {
-		const phrases = [
-			"I'm a recent CS graduate passionate about graphics and imaging.",
-			"I am actively seeking a job in software development.",
-		];
-		const intro = document.querySelector(`.${styles.intro}`);
-		let index = 0;
-		let charIndex = 0;
-		let isDeleting = false;
+  const [openCard, setOpenCard] = useState(null);
+  const toggleCard = useCallback(
+    (i) => setOpenCard((v) => (v === i ? null : i)),
+    []
+  );
 
-		function type() {
-			const currentPhrase = phrases[index];
-			intro.textContent = currentPhrase.substring(0, charIndex);
-			if (!isDeleting && charIndex < currentPhrase.length) {
-				charIndex++;
-				setTimeout(type, 75);
-			} else if (isDeleting && charIndex > 1) {
-				charIndex--;
-				setTimeout(type, 40);
-			} else {
-				isDeleting = !isDeleting;
-				if (!isDeleting) index = (index + 1) % phrases.length;
-				setTimeout(type, 1000); // Pause before next
-			}
-		}
-		type();
-	}, []);
+  const phrases = useMemo(
+    () => [
+      'Software engineer focused on imaging, graphics, and full-stack web.',
+      'Shipped ml imaging tooling, a production wildfire map, and a realtime ray/path tracer.'
+    ],
+    []
+  );
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPhraseIdx((i) => (i + 1) % phrases.length);
+    }, 3200);
+    return () => clearInterval(id);
+  }, [phrases]);
 
-	return (
-		<div className={styles.body}>
-			<Head>
-				<title>Adam Henry</title>
-			</Head>
-			<div className={styles.container}>
-				<div className={styles.introSection}>
-					<h1 className={styles.title}>Hey, I'm Adam Henry</h1>
-					<p className={styles.intro}></p>
-				</div>
+  const projects = [
+    {
+      title: 'Enhancing Deformation Analysis capstone',
+      image: '/images/EDA_UI.png',
+      link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
+      summary:
+        'c++ desktop ui for ml-assisted sem imaging and stress analysis used by researchers.',
+      details: [
+        'trained models on 10k+ sem images of graphite for stress analysis',
+        'c++ + imgui ui; opencv tooling for filtering and measurement',
+        'ci/cd via github actions for automated build and release'
+      ]
+    },
+    {
+      title: 'Wildfire Map',
+      image: '/images/wildfire-map.png',
+      link: 'https://wildfire-map.com',
+      summary:
+        'full-stack app visualizing wildfire locations and satellite heat points.',
+      details: [
+        'react + leaflet frontend, node.js backend',
+        'deployed on digitalocean with nginx reverse proxy',
+        'data ingestion from public agency endpoints'
+      ]
+    },
+    {
+      title: 'Ray/Path Tracer',
+      image: '/images/raytracer.png',
+      link: 'https://github.com/ajh416/RayTracer',
+      summary:
+        'cpu/gpu renderer with bvh, reflections, refractions, and gi at interactive framerates.',
+      details: [
+        '60+ fps rendering on >1000 triangles depending on scene',
+        'imgui controls for runtime parameter tweaks',
+        'parallelism and acceleration structures for perf'
+      ]
+    },
+    {
+      title: 'This Website',
+      image: '/images/portfolio.png',
+      link: 'https://github.com/ajh416/portfolio',
+      summary:
+        'next.js portfolio with ci/cd and a responsive project grid.',
+      details: [
+        'github actions for deploy automation',
+        'accessible, keyboard-navigable project cards',
+        'simple analytics-ready cta structure'
+      ]
+    }
+  ];
 
-				<h1 className={styles.title}>Stuff I've Made</h1>
-				<div className={styles.cardGrid}>
-					{projects.map((proj, idx) => (
-						<div
-							key={idx}
-							className={styles.card}
-							onClick={() => toggleCard(idx)}
-						>
-							<img src={proj.image} alt={`screenshot of ${proj.title}`} className={styles.cardImage} />
-							<div className={styles.cardHeader}>
-								<h3>{proj.title}</h3>
-								<Link href={proj.link} target="_blank" className={styles.button}>view</Link>
-							</div>
-							<p className={styles.cardSummary}>{proj.summary}</p>
-							{/* details section that expands on hover (desktop) or when clicked (mobile) */}
-							<div className={`${styles.cardDetails} ${openCard === idx ? styles.cardDetailsOpen : ''}`}>
-								<p>{proj.details}</p>
-							</div>
-						</div>
-					))}
-				</div>
-				<div className={styles.resumeSection}>
-					<h2 className={styles.resumeTitle}>About Me</h2>
-					<div className={styles.resumeContent}>
-						<h3>Education</h3>
-						<p>Oregon State University — B.S. Computer Science, Graduated June 2025</p>
-						<p>Focus: Software Engineering, Imaging, and Graphics</p>
+  return (
+    <div className={styles.body}>
+      <div className={styles.container}>
 
-						<h3>Skills</h3>
-						<ul className={styles.skillsList}>
-							<li><strong>Languages:</strong> C/C++, C#, Python, JavaScript/TypeScript, Java, SQL, HTML/CSS</li>
-							<li><strong>Frameworks:</strong> React, Next.js, Node.js</li>
-							<li><strong>Developer Tools:</strong> Git, Docker, GitHub Actions (CI/CD), GCP, AWS, Linux, VS Code, Visual Studio</li>
-							<li><strong>Libraries & APIs:</strong> OpenCV, ImGui, NumPy, pandas, Matplotlib, PyTorch, TensorFlow</li>
-						</ul>
+        {/* hero */}
+        <section className={styles.introSection} aria-label="hero">
+          <h1 className={styles.title}>Adam Henry</h1>
+          <p className={styles.intro} aria-live="polite">
+            {phrases[phraseIdx]}
+          </p>
 
-						<h3>Hobbies</h3>
-						<p>Programming, hiking, photography (aviation/wildlife), gaming, and learning about radio/RF systems.</p>
-					</div>
-					<p className={styles.resumePlug}>
-						Check out my <Link href="/AdamHenryResume.pdf" target="_blank" className={styles.resumebutton}>resume (.pdf)</Link> and <Link href="https://github.com/ajh416" target="_blank" className={styles.resumebutton}>GitHub</Link> for more information.
-					</p>
-				</div>
+          {/* ctas */}
+          <div className={styles.ctaRow}>
+            <Link href="mailto:adamhenry416@gmail.com" className={styles.button}>
+              Email Me
+            </Link>
+            <Link
+              href="/AdamHenryResume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.button}
+            >
+              Download Resume (pdf)
+            </Link>
+            <Link
+              href="https://github.com/ajh416"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.button}
+            >
+              GitHub
+            </Link>
+          </div>
 
-			</div>
-		</div>
-	);
+          {/* quick facts */}
+          <ul className={styles.quickFacts} aria-label="quick facts">
+            <li className={styles.quickFact}>
+              <span className={styles.qfLabel}>Degree</span>
+              <span className={styles.qfValue}>B.S. Computer Science, Oregon State, June 2025</span>
+            </li>
+            <li className={styles.quickFact}>
+              <span className={styles.qfLabel}>Focus</span>
+              <span className={styles.qfValue}>C/C++ & Embedded, OpenCV, Next.js, ML, Imaging</span>
+            </li>
+            <li className={styles.quickFact}>
+              <span className={styles.qfLabel}>Location</span>
+              <span className={styles.qfValue}>Bend, OR • Open to Relocation</span>
+            </li>
+          </ul>
+        </section>
+
+        {/* projects */}
+        <h1 className={styles.title}>Stuff I've Made</h1>
+        <div className={styles.cardGrid}>
+          {projects.map((proj, idx) => (
+            <div
+              key={proj.title}
+              className={styles.card}
+              role="button"
+              tabIndex={0}
+              aria-expanded={openCard === idx}
+              onClick={() => toggleCard(idx)}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  toggleCard(idx);
+                }
+              }}
+            >
+              <div className={styles.imageWrap}>
+                <Image
+                  src={proj.image}
+                  alt={`${proj.title} screenshot`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: 'cover', borderRadius: 4 }}
+                  priority={idx < 2}
+                />
+              </div>
+
+              <div className={styles.cardHeader}>
+                <h3>{proj.title}</h3>
+                <Link href={proj.link} target="_blank" rel="noopener noreferrer" className={styles.button}>
+                  view
+                </Link>
+              </div>
+
+              <p className={styles.cardSummary}>{proj.summary}</p>
+
+              <div className={`${styles.cardDetails} ${openCard === idx ? styles.cardDetailsOpen : ''}`}>
+                <ul className={styles.detailsList}>
+                  {proj.details.map((d) => (
+                    <li key={d}>{d}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* about / resume mirror */}
+        <div className={styles.resumeSection}>
+          <h2 className={styles.resumeTitle}>About Me</h2>
+          <div className={styles.resumeContent}>
+            <h3>Experience</h3>
+            <p><strong>Capstone — Imaging / AI</strong> • Oregon State University • 2024-2025</p>
+            <ul className={styles.skillsList}>
+              <li>Trained models on 10k+ sem images for stress analysis</li>
+              <li>Built c++/imgui desktop ui with opencv image tooling</li>
+              <li>Set up github actions ci/cd for automated build and release</li>
+              <li>Researched imaging techniques for crack detection</li>
+            </ul>
+
+            <h3>Projects</h3>
+            <ul className={styles.skillsList}>
+              <li><strong>Wildfire Map</strong> — js, html, css, node.js, leaflet; deployed with nginx on digitalocean</li>
+              <li><strong>Flashcard Web App</strong> — next.js + typescript hackathon project with ai card generation and google oauth</li>
+              <li><strong>Ray/Path Tracer</strong> — c++ renderer with bvh; 60+ fps on 1000 triangles; imgui controls</li>
+            </ul>
+
+            <h3>Skills</h3>
+            <ul className={styles.skillsList}>
+              <li><strong>Languages:</strong> c/c++, c#, python, javascript/typescript, java, sql, html/css</li>
+              <li><strong>Frameworks:</strong> react, next.js, node.js</li>
+              <li><strong>Developer tools:</strong> git, docker, github actions (ci/cd), gcp, aws, linux, vs code, visual studio</li>
+              <li><strong>Libraries & APIs:</strong> opencv, imgui, numpy, pandas, matplotlib, pytorch, tensorflow, rest apis</li>
+            </ul>
+
+            <h3>Education</h3>
+            <p>Oregon State University — B.S. Computer Science, Graduated June 2025</p>
+          </div>
+
+          <p className={styles.resumePlug}>
+            check out my{' '}
+            <Link href="/AdamHenryResume.pdf" target="_blank" rel="noopener noreferrer" className={styles.resumebutton}>
+              resume (.pdf)
+            </Link>{' '}
+            and{' '}
+            <Link href="https://github.com/ajh416" target="_blank" rel="noopener noreferrer" className={styles.resumebutton}>
+              github
+            </Link>{' '}
+            for more information.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
