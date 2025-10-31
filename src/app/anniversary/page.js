@@ -6,7 +6,6 @@ import { useMemo, useState, useEffect } from "react";
 
 // ==== config ====
 const PASS_HASH = "e4ad93ca07acb8d908a3aa41e920ea4f4ef4f26e7f86cf8291c5db289780a5ae";
-// unique key so you can revoke later by changing it
 const STORAGE_KEY = "anniv-pass-ok-v1";
 
 const seedMemories = [
@@ -15,15 +14,15 @@ const seedMemories = [
     date: "2024-03-26",
     title: "coast trip",
     caption: "tillamook, depoe bay, and sea lion caves.",
-    src: "/anniversary/coast-trip.jpg",
-    alt: "two people hiking at sunset",
+    src: "/anniversary/images/coast-trip.jpg",
+    alt: "tillamook cheese",
   },
   {
     id: "tulip-festival",
     date: "2025-04-13",
     title: "tulip festival",
     caption: "exploring the colorful fields of woodburn, with you.",
-    src: "/anniversary/tulip-festival.jpg",
+    src: "/anniversary/images/tulip-festival.jpg",
     alt: "tulip fields in bloom",
   },
   {
@@ -31,24 +30,42 @@ const seedMemories = [
     date: "2025-05-02",
     title: "japanese garden",
     caption: "japanese garden with spring greenery.",
-    src: "/anniversary/japanese-garden.jpg",
+    src: "/anniversary/images/japanese-garden.jpg",
     alt: "japanese garden with spring greenery",
   },
   {
-    id: "sf-trip",
+    id: "sparks-lake",
+    date: "2025-07-27",
+    title: "sparks lake",
+    caption: "sparks lake with stunning reflections.",
+    src: "/anniversary/images/sparks-lake.jpg",
+    alt: "sparks lake with stunning reflections",
+  },
+  {
+    id: "sf-palace",
     date: "2025-10-18",
-    title: "san francisco",
-    caption: "fog, cable cars, and 10k steps. worth.",
-    src: "/anniversary/sf.jpg",
-    alt: "city street with cable car",
+    title: "palace of fine arts",
+    caption: "so much walking and exploring san francisco with you.",
+    src: "/anniversary/images/sf-palace.jpg",
+    alt: "us, inside the palace of fine arts",
   },
 ];
 
-// util
-function daysSince(isoStart) {
-  const start = new Date(isoStart);
-  const now = new Date();
-  return Math.floor((now - start) / (1000 * 60 * 60 * 24));
+// ===== date utils: parse as LOCAL, not utc =====
+function parseLocalISO(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d); // local midnight
+}
+function fmtLocal(iso, opts) {
+  return parseLocalISO(iso).toLocaleDateString(undefined, opts);
+}
+function daysSinceLocal(isoStart) {
+  const s = parseLocalISO(isoStart);
+  const n = new Date();
+  // compare at local noon to dodge dst edges
+  const sNoon = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 12);
+  const nNoon = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12);
+  return Math.round((nNoon - sNoon) / 86400000);
 }
 
 // sha-256(text) -> hex
@@ -60,12 +77,13 @@ async function sha256Hex(text) {
 }
 
 export default function AnniversaryPage() {
-  const startDateISO = "2024-11-02"; // change to your date
-  const days = useMemo(() => daysSince(startDateISO), [startDateISO]);
+  const startDateISO = "2024-11-01"; // keep plain date; we parse as local
+  const days = useMemo(() => daysSinceLocal(startDateISO), [startDateISO]);
+
   const memories = useMemo(
     () =>
       [...seedMemories].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        (a, b) => parseLocalISO(a.date).getTime() - parseLocalISO(b.date).getTime()
       ),
     []
   );
@@ -83,19 +101,6 @@ export default function AnniversaryPage() {
       setOk(localStorage.getItem(STORAGE_KEY) === "1");
     } catch {}
     setChecking(false);
-  }, []);
-
-  // allow auto-pass via ?p= query (convenience)
-  useEffect(() => {
-    if (ok) return;
-    const url = new URL(window.location.href);
-    const p = url.searchParams.get("p");
-    if (p) {
-      handleTryPass(p);
-      url.searchParams.delete("p");
-      window.history.replaceState({}, "", url.toString());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleTryPass(pass) {
@@ -142,7 +147,7 @@ export default function AnniversaryPage() {
         </h1>
         <p>
           since{" "}
-          {new Date(startDateISO).toLocaleDateString(undefined, {
+          {fmtLocal(startDateISO, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -162,7 +167,6 @@ export default function AnniversaryPage() {
                   onClick={() => setActive(m)}
                   aria-label={`open image: ${m.title}`}
                 >
-                  {/* small perf tweak: don’t priority-load until unlocked (we are unlocked now) */}
                   <Image
                     src={m.src}
                     alt={m.alt ?? m.title}
@@ -174,7 +178,7 @@ export default function AnniversaryPage() {
                 <div className="meta">
                   <h3>{m.title}</h3>
                   <time>
-                    {new Date(m.date).toLocaleDateString(undefined, {
+                    {fmtLocal(m.date, {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
@@ -236,8 +240,8 @@ function PasscodeGate({ onPass }) {
   return (
     <main className="gate">
       <div className="card">
-        <h1>hi 💌</h1>
-        <p>enter our secret word</p>
+        <h1>hi bebe 💌</h1>
+        <p>enter something we said 6 months ago</p>
         <form onSubmit={submit} className="row">
           <input
             type="password"
