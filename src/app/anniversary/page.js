@@ -11,35 +11,75 @@ const STORAGE_KEY = "anniv-pass-ok-v1";
 const seedMemories = [
   {
     id: "coast-trip",
-    date: "2024-03-26",
+    date: "2024-03-25",
     title: "coast trip",
     caption: "tillamook, depoe bay, and sea lion caves.",
     src: "/anniversary/images/coast-trip.jpg",
     alt: "tillamook cheese",
   },
   {
+    id: "dinner-date",
+    date: "2024-03-28",
+    title: "dinner date",
+    caption: "our romantic dinner at zydeco.",
+    src: "/anniversary/images/dinner-date.jpg",
+    alt: "food at zydeco",
+  },
+  {
     id: "tulip-festival",
-    date: "2025-04-13",
+    date: "2025-04-12",
     title: "tulip festival",
-    caption: "exploring the colorful fields of woodburn, with you.",
+    caption: "exploring the colorful fields of woodburn, with my love.",
     src: "/anniversary/images/tulip-festival.jpg",
     alt: "tulip fields in bloom",
   },
   {
     id: "japanese-garden",
-    date: "2025-05-02",
+    date: "2025-05-01",
     title: "japanese garden",
-    caption: "japanese garden with spring greenery.",
+    caption: "us in the japanese garden, springtime greenery all around.",
     src: "/anniversary/images/japanese-garden.jpg",
     alt: "japanese garden with spring greenery",
   },
   {
+    id: "my-graduation",
+    date: "2025-06-14",
+    title: "my graduation",
+    caption: "celebrating my graduation day.",
+    src: "/anniversary/images/my-graduation.jpg",
+    alt: "my graduation day",
+  },
+  {
+    id: "kas-streets",
+    date: "2025-06-23",
+    title: "Kas streets",
+    caption: "exploring the beautiful streets of Kas with my beauty.",
+    src: "/anniversary/images/kas-streets.jpg",
+    alt: "Kas streets",
+  },
+  {
+    id: "hot-air-balloon-ride",
+    date: "2025-06-24",
+    title: "hot air balloon ride in Turkey",
+    caption: "in the air with you, over Pamukkale.",
+    src: "/anniversary/images/hot-air-balloon-ride.jpg",
+    alt: "hot air balloon ride",
+  },
+  {
+    id: "working-from-bend",
+    date: "2025-07-02",
+    title: "working while visiting me in Bend",
+    caption: "annoying each other while trying to work...",
+    src: "/anniversary/images/working-from-bend.jpg",
+    alt: "working from bend",
+  },
+  {
     id: "sparks-lake",
     date: "2025-07-27",
-    title: "sparks lake",
-    caption: "sparks lake with stunning reflections.",
+    title: "Sparks lake",
+    caption: "Sparks lake with stunning views of my bebe",
     src: "/anniversary/images/sparks-lake.jpg",
-    alt: "sparks lake with stunning reflections",
+    alt: "Sparks lake with stunning reflections",
   },
   {
     id: "sf-palace",
@@ -48,6 +88,14 @@ const seedMemories = [
     caption: "so much walking and exploring san francisco with you.",
     src: "/anniversary/images/sf-palace.jpg",
     alt: "us, inside the palace of fine arts",
+  },
+  {
+    id: "sf-kiss",
+    date: "2025-10-18",
+    title: "golden gate park kiss",
+    caption: "a perfect moment in the park!",
+    src: "/anniversary/images/sf-kiss.jpg",
+    alt: "us, inside golden gate park",
   },
 ];
 
@@ -77,7 +125,7 @@ async function sha256Hex(text) {
 }
 
 export default function AnniversaryPage() {
-  const startDateISO = "2024-11-01"; // keep plain date; we parse as local
+  const startDateISO = "2024-11-01";
   const days = useMemo(() => daysSinceLocal(startDateISO), [startDateISO]);
 
   const memories = useMemo(
