@@ -14,7 +14,7 @@ const seedMemories = [
     date: "2024-03-25",
     title: "coast trip",
     caption: "tillamook, depoe bay, and sea lion caves.",
-    src: "/anniversary/images/coast-trip.jpg",
+    src: "/anniversary/images/coast-trip.JPG",
     alt: "tillamook cheese",
   },
   {
@@ -22,7 +22,7 @@ const seedMemories = [
     date: "2024-03-28",
     title: "dinner date",
     caption: "our romantic dinner at zydeco.",
-    src: "/anniversary/images/dinner-date.jpg",
+    src: "/anniversary/images/dinner-date.JPG",
     alt: "food at zydeco",
   },
   {
@@ -30,7 +30,7 @@ const seedMemories = [
     date: "2025-04-12",
     title: "tulip festival",
     caption: "exploring the colorful fields of woodburn, with my love.",
-    src: "/anniversary/images/tulip-festival.jpg",
+    src: "/anniversary/images/tulip-festival.JPG",
     alt: "tulip fields in bloom",
   },
   {
@@ -62,7 +62,7 @@ const seedMemories = [
     date: "2025-06-24",
     title: "hot air balloon ride in Turkey",
     caption: "in the air with you, over Pamukkale.",
-    src: "/anniversary/images/hot-air-balloon-ride.jpg",
+    src: "/anniversary/images/hot-air-balloon-ride.JPG",
     alt: "hot air balloon ride",
   },
   {
@@ -70,7 +70,7 @@ const seedMemories = [
     date: "2025-07-02",
     title: "working while visiting me in Bend",
     caption: "annoying each other while trying to work...",
-    src: "/anniversary/images/working-from-bend.jpg",
+    src: "/anniversary/images/working-from-bend.JPG",
     alt: "working from bend",
   },
   {
@@ -78,7 +78,7 @@ const seedMemories = [
     date: "2025-07-27",
     title: "Sparks lake",
     caption: "Sparks lake with stunning views of my bebe",
-    src: "/anniversary/images/sparks-lake.jpg",
+    src: "/anniversary/images/sparks-lake.JPG",
     alt: "Sparks lake with stunning reflections",
   },
   {
@@ -86,7 +86,7 @@ const seedMemories = [
     date: "2025-10-18",
     title: "palace of fine arts",
     caption: "so much walking and exploring san francisco with you.",
-    src: "/anniversary/images/sf-palace.jpg",
+    src: "/anniversary/images/sf-palace.JPG",
     alt: "us, inside the palace of fine arts",
   },
   {
@@ -94,7 +94,7 @@ const seedMemories = [
     date: "2025-10-18",
     title: "golden gate park kiss",
     caption: "a perfect moment in the park!",
-    src: "/anniversary/images/sf-kiss.jpg",
+    src: "/anniversary/images/sf-kiss.JPG",
     alt: "us, inside golden gate park",
   },
 ];
