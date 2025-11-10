@@ -6,6 +6,39 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './page.module.css';
 
+function useTypewriter(phrases, { typeMs = 42, deleteMs = 25, holdMs = 1100 } = {}) {
+  const [i, setI] = useState(0);      // phrase index
+  const [pos, setPos] = useState(0);  // char position in current phrase
+  const [del, setDel] = useState(false);
+
+  useEffect(() => {
+    if (!phrases?.length) return;
+    const full = phrases[i] || "";
+    const atEnd = pos === full.length;
+    const atStart = pos === 0;
+
+    const delay = !del
+      ? atEnd ? holdMs : typeMs
+      : atStart ? typeMs : deleteMs;
+
+    const id = setTimeout(() => {
+      if (!del) {
+        if (!atEnd) setPos(pos + 1);
+        else setDel(true);
+      } else {
+        if (!atStart) setPos(pos - 1);
+        else { setDel(false); setI((i + 1) % phrases.length); }
+      }
+    }, delay);
+
+    return () => clearTimeout(id);
+  }, [phrases, i, pos, del, typeMs, deleteMs, holdMs]);
+
+  const full = phrases?.[i] || "";
+  const text = pos === 0 ? "\u00A0" : full.slice(0, pos); // never visually empty
+  return text;
+}
+
 export default function Home() {
   const [openCard, setOpenCard] = useState(null);
   const toggleCard = useCallback(
@@ -20,13 +53,6 @@ export default function Home() {
     ],
     []
   );
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => {
-      setPhraseIdx((i) => (i + 1) % phrases.length);
-    }, 3200);
-    return () => clearInterval(id);
-  }, [phrases]);
 
   const projects = [
     {
@@ -79,6 +105,7 @@ export default function Home() {
     }
   ];
 
+  const text = useTypewriter(phrases)
   return (
     <div className={styles.body}>
       <div className={styles.container}>
@@ -87,7 +114,7 @@ export default function Home() {
         <section className={styles.introSection} aria-label="hero">
           <h1 className={styles.title}>Adam Henry</h1>
           <p className={styles.intro} aria-live="polite">
-            {phrases[phraseIdx]}
+            {text}
           </p>
 
           {/* ctas */}
