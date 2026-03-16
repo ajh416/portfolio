@@ -22,7 +22,7 @@ jobs:
         run: |
           rm -rf out && mkdir -p out
           docker run --rm -v "$PWD/out:/mnt/out" site-builder \
-            bash -lc 'cp -r /app/out/* /mnt/out/'
+            sh -c 'cp -r /app/out/* /mnt/out/'
 
       - name: stamp version
         run: |
@@ -45,9 +45,6 @@ jobs:
         with:
           name: site
           path: site
-
-      - name: install rsync + ssh
-        run: sudo apt-get update && sudo apt-get install -y rsync openssh-client
 
       - name: write ssh key & known_hosts
         run: |
@@ -73,6 +70,14 @@ jobs:
         if: ${{ vars.HEALTHCHECK_URL != '' }}
         run: |
           set -e
-          DEPLOYED=$(curl -fsSL "${{ vars.HEALTHCHECK_URL }}")
-          echo "Healthcheck response: $DEPLOYED"
-          test "$DEPLOYED" = "${{ github.sha}}"
+          for i in 1 2 3; do
+            DEPLOYED=$(curl -fsSL "${{ vars.HEALTHCHECK_URL }}" || true)
+            echo "Attempt $i — response: $DEPLOYED"
+            if [ "$DEPLOYED" = "${{ github.sha }}" ]; then
+              echo "Healthcheck passed"
+              exit 0
+            fi
+            [ "$i" -lt 3 ] && sleep 2
+          done
+          echo "Healthcheck failed after 3 attempts"
+          exit 1
