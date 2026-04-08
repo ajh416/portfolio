@@ -16,17 +16,21 @@ jobs:
 
       # build in a clean linux box so lockfile/deps match prod
       - name: docker build site
-        run: docker build -t site-builder .
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_TURNSTILE_SITE_KEY="${{ secrets.TURNSTILE_SITE_KEY }}" \
+            -t site-builder .
 
-      - name: extract static export
+      - name: extract standalone bundle
         run: |
           rm -rf out && mkdir -p out
           docker run --rm -v "$PWD/out:/mnt/out" site-builder \
-            sh -c 'cp -r /app/out/* /mnt/out/'
+            sh -c 'cp -a /bundle/. /mnt/out/'
 
       - name: stamp version
         run: |
-          echo "${{ github.sha }}" > out/version.txt
+          mkdir -p out/public
+          echo "${{ github.sha }}" > out/public/version.txt
 
       - name: upload artifact
         uses: actions/upload-artifact@v4

@@ -1,11 +1,16 @@
 // app/page.jsx
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export default function Home() {
+  const [showResumeModal, setShowResumeModal] = useState(false);
+
   const projects = [
     {
       title: 'Enhancing Deformation Analysis capstone',
@@ -66,14 +71,13 @@ export default function Home() {
             <Link href="mailto:adam@siamang.dev" className={styles.ctaLink}>
               Email Me
             </Link>
-            <Link
-              href="/AdamHenryResume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setShowResumeModal(true)}
               className={styles.ctaLink}
             >
               Resume (pdf)
-            </Link>
+            </button>
             <Link
               href="https://github.com/ajh416"
               target="_blank"
@@ -146,6 +150,140 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {showResumeModal && (
+        <ResumeModal onClose={() => setShowResumeModal(false)} />
+      )}
+    </div>
+  );
+}
+
+function ResumeModal({ onClose }) {
+  const containerRef = useRef(null);
+  const widgetIdRef = useRef(null);
+  const [status, setStatus] = useState('idle'); // idle | verifying | downloading | error
+  const [error, setError] = useState('');
+
+  // Render the Turnstile widget once the script + container are ready.
+  useEffect(() => {
+    let cancelled = false;
+
+    const tryRender = () => {
+      if (cancelled) return;
+      const ts = typeof window !== 'undefined' ? window.turnstile : undefined;
+      if (!ts || !containerRef.current) {
+        setTimeout(tryRender, 100);
+        return;
+      }
+      widgetIdRef.current = ts.render(containerRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: handleToken,
+        'error-callback': () => {
+          setStatus('error');
+          setError('Challenge failed. Please try again.');
+        },
+        'expired-callback': () => {
+          if (widgetIdRef.current && window.turnstile) {
+            window.turnstile.reset(widgetIdRef.current);
+          }
+        },
+        theme: 'dark',
+      });
+    };
+    tryRender();
+
+    return () => {
+      cancelled = true;
+      if (widgetIdRef.current && typeof window !== 'undefined' && window.turnstile) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch {
+          /* ignore */
+        }
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Esc key closes
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  async function handleToken(token) {
+    setStatus('verifying');
+    setError('');
+    try {
+      const res = await fetch('/api/resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}`);
+      }
+      const blob = await res.blob();
+      setStatus('downloading');
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'AdamHenryResume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      onClose();
+    } catch (err) {
+      setStatus('error');
+      setError(err?.message || 'Download failed.');
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current);
+      }
+    }
+  }
+
+  return (
+    <div
+      className={styles.modalBackdrop}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="resume-modal-title"
+    >
+      <div className={styles.modalCard}>
+        <div className={styles.modalHeader}>
+          <h2 id="resume-modal-title" className={styles.modalTitle}>
+            Quick check before the download
+          </h2>
+          <button
+            type="button"
+            className={styles.modalClose}
+            onClick={onClose}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <p className={styles.modalBody}>
+          Just confirming you&apos;re a human.
+        </p>
+        <div ref={containerRef} className={styles.turnstileContainer} />
+        {status === 'verifying' && (
+          <p className={styles.modalStatus}>Verifying…</p>
+        )}
+        {status === 'downloading' && (
+          <p className={styles.modalStatus}>Starting download…</p>
+        )}
+        {status === 'error' && (
+          <p className={styles.modalError}>{error}</p>
+        )}
+      </div>
     </div>
   );
 }
