@@ -24,7 +24,7 @@ jobs:
       - name: extract standalone bundle
         run: |
           rm -rf out && mkdir -p out
-          docker run --rm -v "$PWD/out:/mnt/out" site-builder \
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/out:/mnt/out" site-builder \
             sh -c 'cp -a /bundle/. /mnt/out/'
 
       - name: stamp version
