@@ -25,7 +25,7 @@ jobs:
         run: |
           rm -rf out && mkdir -p out
           docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/out:/mnt/out" site-builder \
-            sh -c 'cp -a /bundle/. /mnt/out/'
+            sh -c 'cp -r /bundle/. /mnt/out/'
 
       - name: stamp version
         run: |
@@ -37,6 +37,7 @@ jobs:
         with:
           name: site
           path: out
+          include-hidden-files: true
 
   deploy:
     needs: build
