@@ -58,7 +58,7 @@ export async function POST(request) {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="AdamHenryResume.pdf"',
+      'Content-Disposition': 'inline; filename="AdamHenryResume.pdf"',
       'Cache-Control': 'no-store',
     },
   });

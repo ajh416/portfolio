@@ -229,13 +229,9 @@ function ResumeModal({ onClose }) {
       const blob = await res.blob();
       setStatus('downloading');
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'AdamHenryResume.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      window.open(url, '_blank', 'noopener,noreferrer');
+      // Give the new tab time to load the blob before revoking.
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
       onClose();
     } catch (err) {
       setStatus('error');
