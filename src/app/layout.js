@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import './globals.css';
 
 export const metadata = {
@@ -19,7 +20,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          async
+          defer
+        />
+      </body>
     </html>
   );
 }
