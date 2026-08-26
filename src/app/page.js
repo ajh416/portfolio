@@ -1,181 +1,239 @@
-// app/page.jsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
+const experience = [
+  {
+    role: 'IT Client Services Technician I',
+    organization: 'Bend-La Pine Schools',
+    location: 'Bend, OR',
+    dates: 'November 2025 - Present',
+    details: [
+      'Provide technical support for 1,500 users across macOS, iPadOS, and Windows; manage device lifecycle through Jamf MDM, including deployment, imaging, and configuration.',
+      'Maintain internal documentation and support integrations with Synergy SIS, Canvas LMS, and Google Workspace.',
+      'Assist with network maintenance including patch-panel termination.',
+    ],
+  },
+];
+
+const projects = [
+  {
+    title: 'Enhancing Deformation Analysis UI',
+    technologies: 'C++, OpenCV, PyTorch, CMake, CUDA',
+    link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
+    details: [
+      'Architected and authored more than 90% of a cross-platform desktop application for ML-assisted deformation analysis of SEM, TEM, and STEM microscopy image sequences.',
+      'Built a real-time image-processing pipeline for stabilization, denoising, crack detection, and strain-map generation using OpenCV and the PyTorch C++ API.',
+      'Integrated LibTorch inference with optional CUDA and cuDNN acceleration for GPU processing.',
+    ],
+  },
+  {
+    title: 'Ray / Path Tracer',
+    technologies: 'C++, ImGui, GLFW, GLSL',
+    link: 'https://github.com/ajh416/RayTracer',
+    details: [
+      'Built a CPU/GPU ray- and path-tracing renderer in C++ with real-time interactive controls through ImGui.',
+      'Sustains 60+ FPS while rendering 1,000+ triangles using BVH acceleration and GLSL compute shaders for GPU path tracing.',
+    ],
+  },
+  {
+    title: 'Wildfire Map',
+    technologies: 'JavaScript, React, Node.js, HTML/CSS',
+    link: 'https://wildfire-map.com',
+    details: [
+      'Built a full-stack web application that visualizes live wildfire data, including satellite-detected heat points.',
+      'Deployed on DigitalOcean through nginx and integrated external geospatial APIs for real-time data ingestion.',
+    ],
+  },
+];
+
+const skills = [
+  ['Languages', 'C/C++, Python, JavaScript/TypeScript, SQL, HTML/CSS'],
+  ['Libraries & frameworks', 'OpenCV, LibTorch/PyTorch, ONNX Runtime, ImGui, NumPy, React, Next.js, Node.js'],
+  ['Developer tools', 'Git, CMake, Docker, GitHub Actions (CI/CD), Linux, AWS, GCP'],
+  ['Other', 'CUDA/cuDNN, REST APIs, nginx, PostgreSQL, Jamf, Cisco networking'],
+];
+
 export default function Home() {
   const [showResumeModal, setShowResumeModal] = useState(false);
+  const [theme, setTheme] = useState('light');
 
-  const projects = [
-    {
-      title: 'Enhancing Deformation Analysis capstone',
-      image: '/images/EDA_UI.png',
-      link: 'https://github.com/OSU-Enhancing-Deformation-Analysis/EnhancingDeformationAnalysisUI',
-      summary:
-        'c++ desktop ui for ml-assisted sem imaging and stress analysis used by researchers.'
-    },
-    {
-      title: 'Wildfire Map',
-      image: '/images/wildfire-map.png',
-      link: 'https://wildfire-map.com',
-      summary:
-        'full-stack app visualizing wildfire locations and satellite heat points.'
-    },
-    {
-      title: 'Ray/Path Tracer',
-      image: '/images/raytracer.png',
-      link: 'https://github.com/ajh416/RayTracer',
-      summary:
-        'cpu/gpu renderer with bvh, reflections, refractions, and gi at interactive framerates.'
-    },
-    {
-      title: 'This Website',
-      image: '/images/portfolio.png',
-      link: 'https://github.com/ajh416/portfolio',
-      summary:
-        'next.js portfolio with ci/cd and a distinctive design'
-    }
-  ];
+  useEffect(() => {
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const activeTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
+    setTheme(activeTheme);
+
+    const followSystemTheme = (event) => {
+      if (localStorage.getItem('theme')) return;
+      const nextTheme = event.matches ? 'dark' : 'light';
+      root.dataset.theme = nextTheme;
+      root.style.colorScheme = nextTheme;
+      setTheme(nextTheme);
+    };
+
+    media.addEventListener('change', followSystemTheme);
+    return () => media.removeEventListener('change', followSystemTheme);
+  }, []);
+
+  function toggleTheme() {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nextTheme;
+    document.documentElement.style.colorScheme = nextTheme;
+    localStorage.setItem('theme', nextTheme);
+    setTheme(nextTheme);
+  }
 
   return (
-    <div className={styles.layout}>
-      {/* Sidebar */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarContent}>
-          <h1 className={styles.name}>Adam Henry</h1>
-          <p className={styles.tagline}>
-            Software engineer focused on imaging, graphics, and full-stack web.
-          </p>
+    <main className={styles.page}>
+      <article className={styles.resume}>
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.name}>Adam Henry</h1>
+            <p className={styles.role}>Software Engineer</p>
+          </div>
 
-          <ul className={styles.quickFacts}>
-            <li className={styles.quickFact}>
-              <span className={styles.qfLabel}>Degree</span>
-              <span className={styles.qfValue}>B.S. Computer Science, Oregon State, June 2025</span>
-            </li>
-            <li className={styles.quickFact}>
-              <span className={styles.qfLabel}>Focus</span>
-              <span className={styles.qfValue}>C/C++ & Embedded, OpenCV, Next.js, ML, Imaging</span>
-            </li>
-            <li className={styles.quickFact}>
-              <span className={styles.qfLabel}>Location</span>
-              <span className={styles.qfValue}>Bend, OR • Open to Relocation</span>
-            </li>
-          </ul>
-
-          <div className={styles.ctaColumn}>
-            <Link href="mailto:adam@siamang.dev" className={styles.ctaLink}>
-              Email Me
+          <div className={styles.contact} aria-label="Contact information">
+            <Link href="mailto:adam@siamang.dev">adam@siamang.dev</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="https://github.com/ajh416" target="_blank" rel="noopener noreferrer">
+              github.com/ajh416
             </Link>
+            <span aria-hidden="true">/</span>
+            <span>Bend, Oregon</span>
+          </div>
+
+          <div className={styles.headerActions}>
             <button
               type="button"
+              className={styles.headerAction}
               onClick={() => setShowResumeModal(true)}
-              className={styles.ctaLink}
             >
-              Resume (pdf)
+              View PDF résumé
             </button>
-            <Link
-              href="https://github.com/ajh416"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaLink}
-            >
-              GitHub
-            </Link>
           </div>
-        </div>
-      </aside>
+        </header>
 
-      {/* Main Content */}
-      <main className={styles.main}>
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Projects</h2>
-          <div className={styles.cardGrid}>
-            {projects.map((proj, idx) => (
-              <article key={proj.title} className={styles.card}>
-                <div className={styles.imageWrap}>
-                  <Image
-                    src={proj.image}
-                    alt={`${proj.title} screenshot`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    style={{ objectFit: 'cover', borderRadius: 4 }}
-                    priority={idx < 2}
-                  />
+        <section className={styles.section} aria-labelledby="profile-heading">
+          <h2 id="profile-heading" className={styles.sectionTitle}>Profile</h2>
+          <p className={styles.profile}>
+            Software engineer with a B.S. in Computer Science from Oregon State University.
+            Experienced in C++ and Python, with shipped projects spanning GPU-accelerated image
+            processing, real-time rendering, and full-stack web development. Currently supporting
+            end-user systems for a public school district.
+          </p>
+        </section>
+
+        <section className={styles.section} aria-labelledby="experience-heading">
+          <h2 id="experience-heading" className={styles.sectionTitle}>Experience</h2>
+          {experience.map((job) => (
+            <div className={styles.entry} key={`${job.organization}-${job.role}`}>
+              <div className={styles.entryHeader}>
+                <div>
+                  <h3>{job.role}</h3>
+                  <p className={styles.organization}>{job.organization} · {job.location}</p>
                 </div>
-                <div className={styles.cardBody}>
-                  <h3 className={styles.cardTitle}>{proj.title}</h3>
-                  <p className={styles.cardSummary}>{proj.summary}</p>
-                  <Link
-                    href={proj.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.cardLink}
-                  >
-                    View Project
-                  </Link>
+                <p className={styles.dates}>{job.dates}</p>
+              </div>
+              <ul className={styles.details}>
+                {job.details.map((detail) => <li key={detail}>{detail}</li>)}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section className={styles.section} aria-labelledby="projects-heading">
+          <h2 id="projects-heading" className={styles.sectionTitle}>Selected Projects</h2>
+          <div className={styles.projectList}>
+            {projects.map((project) => (
+              <div className={styles.entry} key={project.title}>
+                <div className={styles.projectHeading}>
+                  <h3>
+                    <Link href={project.link} target="_blank" rel="noopener noreferrer">
+                      {project.title}
+                    </Link>
+                  </h3>
+                  <p className={styles.technologies}>{project.technologies}</p>
                 </div>
-              </article>
+                <ul className={styles.details}>
+                  {project.details.map((detail) => <li key={detail}>{detail}</li>)}
+                </ul>
+              </div>
             ))}
           </div>
         </section>
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>About</h2>
-          <div className={styles.aboutContent}>
-            <div className={styles.aboutBlock}>
-              <h3>Experience</h3>
-              <p><strong>IT Client Services Technician I</strong></p>
-              <p className={styles.jobMeta}>Bend-La Pine School District • Nov. 2025 - Present</p>
+        <section className={styles.section} aria-labelledby="education-heading">
+          <h2 id="education-heading" className={styles.sectionTitle}>Education</h2>
+          <div className={styles.entryHeader}>
+            <div>
+              <h3>Oregon State University</h3>
+              <p className={styles.organization}>Bachelor of Science in Computer Science</p>
             </div>
-
-            <div className={styles.aboutBlock}>
-              <h3>Skills</h3>
-              <ul>
-                <li><strong>Languages:</strong> c/c++, c#, python, javascript/typescript, java, sql, html/css</li>
-                <li><strong>Frameworks:</strong> react, next.js, node.js</li>
-                <li><strong>Developer tools:</strong> git, docker, github actions, gcp, aws, linux</li>
-                <li><strong>Libraries:</strong> opencv, imgui, numpy, pandas, pytorch, tensorflow</li>
-              </ul>
-            </div>
-
-            <div className={styles.aboutBlock}>
-              <h3>Education</h3>
-              <p>Oregon State University — B.S. Computer Science, Graduated June 2025</p>
+            <div className={styles.educationMeta}>
+              <p>Corvallis, OR</p>
+              <p>September 2021 - June 2025</p>
             </div>
           </div>
         </section>
-      </main>
+
+        <section className={`${styles.section} ${styles.skillsSection}`} aria-labelledby="skills-heading">
+          <h2 id="skills-heading" className={styles.sectionTitle}>Technical Skills</h2>
+          <dl className={styles.skills}>
+            {skills.map(([label, value]) => (
+              <div className={styles.skillRow} key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <footer className={styles.footer}>
+          <div className={styles.footerIdentity}>
+            <span>Adam Henry · Software Engineer</span>
+            <span aria-hidden="true">/</span>
+            <button
+              type="button"
+              className={styles.footerTheme}
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            </button>
+          </div>
+          <Link href="mailto:adam@siamang.dev">Get in touch</Link>
+        </footer>
+      </article>
 
       {showResumeModal && (
-        <ResumeModal onClose={() => setShowResumeModal(false)} />
+        <ResumeModal theme={theme} onClose={() => setShowResumeModal(false)} />
       )}
-    </div>
+    </main>
   );
 }
 
-function ResumeModal({ onClose }) {
+function ResumeModal({ theme, onClose }) {
   const containerRef = useRef(null);
   const widgetIdRef = useRef(null);
-  const [status, setStatus] = useState('idle'); // idle | verifying | downloading | error
+  const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
-  // Render the Turnstile widget once the script + container are ready.
   useEffect(() => {
     let cancelled = false;
 
     const tryRender = () => {
       if (cancelled) return;
-      const ts = typeof window !== 'undefined' ? window.turnstile : undefined;
-      if (!ts || !containerRef.current) {
+      const turnstile = typeof window !== 'undefined' ? window.turnstile : undefined;
+      if (!turnstile || !containerRef.current) {
         setTimeout(tryRender, 100);
         return;
       }
-      widgetIdRef.current = ts.render(containerRef.current, {
+      widgetIdRef.current = turnstile.render(containerRef.current, {
         sitekey: TURNSTILE_SITE_KEY,
         callback: handleToken,
         'error-callback': () => {
@@ -187,7 +245,7 @@ function ResumeModal({ onClose }) {
             window.turnstile.reset(widgetIdRef.current);
           }
         },
-        theme: 'dark',
+        theme,
       });
     };
     tryRender();
@@ -198,17 +256,16 @@ function ResumeModal({ onClose }) {
         try {
           window.turnstile.remove(widgetIdRef.current);
         } catch {
-          /* ignore */
+          // The widget may already have cleaned itself up.
         }
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Esc key closes
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+    const onKey = (event) => {
+      if (event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -218,19 +275,17 @@ function ResumeModal({ onClose }) {
     setStatus('verifying');
     setError('');
     try {
-      const res = await fetch('/api/resume', {
+      const response = await fetch('/api/resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
-      if (!res.ok) {
-        throw new Error(`Server returned ${res.status}`);
-      }
-      const blob = await res.blob();
+      if (!response.ok) throw new Error(`Server returned ${response.status}`);
+
+      const blob = await response.blob();
       setStatus('downloading');
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank', 'noopener,noreferrer');
-      // Give the new tab time to load the blob before revoking.
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
       onClose();
     } catch (err) {
@@ -245,8 +300,8 @@ function ResumeModal({ onClose }) {
   return (
     <div
       className={styles.modalBackdrop}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
       }}
       role="dialog"
       aria-modal="true"
@@ -254,31 +309,16 @@ function ResumeModal({ onClose }) {
     >
       <div className={styles.modalCard}>
         <div className={styles.modalHeader}>
-          <h2 id="resume-modal-title" className={styles.modalTitle}>
-            Quick check before the download
-          </h2>
-          <button
-            type="button"
-            className={styles.modalClose}
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <h2 id="resume-modal-title" className={styles.modalTitle}>One quick check</h2>
+          <button type="button" className={styles.modalClose} onClick={onClose} aria-label="Close">
             ×
           </button>
         </div>
-        <p className={styles.modalBody}>
-          Just confirming you&apos;re a human.
-        </p>
+        <p className={styles.modalBody}>Confirm you&apos;re human to open the PDF résumé.</p>
         <div ref={containerRef} className={styles.turnstileContainer} />
-        {status === 'verifying' && (
-          <p className={styles.modalStatus}>Verifying…</p>
-        )}
-        {status === 'downloading' && (
-          <p className={styles.modalStatus}>Starting download…</p>
-        )}
-        {status === 'error' && (
-          <p className={styles.modalError}>{error}</p>
-        )}
+        {status === 'verifying' && <p className={styles.modalStatus}>Verifying…</p>}
+        {status === 'downloading' && <p className={styles.modalStatus}>Opening résumé…</p>}
+        {status === 'error' && <p className={styles.modalError}>{error}</p>}
       </div>
     </div>
   );
